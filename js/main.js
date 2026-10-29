@@ -13,6 +13,7 @@ const CHALLENGES = [arm, legs, iq];
 const params = new URLSearchParams(location.search);
 const DATE = /^\d{4}-\d{2}-\d{2}$/.test(params.get('seed') || '') ? params.get('seed') : todayKey();
 const DAY = dayNumber(DATE);
+const DRILL = ['arm', 'legs', 'iq'].includes(params.get('drill')) ? params.get('drill') : null;
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -111,11 +112,11 @@ function hideOverlay() {
   $('#overlay').hidden = true;
 }
 
-function intro(meta, idx) {
+function intro(meta, idx, total) {
   return new Promise((resolve) => {
     const o = overlay(`
       <div class="card intro">
-        <p class="kicker">Drill ${idx + 1} of 3</p>
+        <p class="kicker">Drill ${idx + 1} of ${total}</p>
         <div class="intro-icon">${meta.icon}</div>
         <h2>${meta.title}</h2>
         <ul>${meta.howTo.map((h) => `<li>${h}</li>`).join('')}</ul>
@@ -174,18 +175,20 @@ function countUp(el, to, ms = 800, fmt = (v) => String(v)) {
 async function runChallenges() {
   if (state.running) return;
   state.running = true;
-  const seed = state.practice ? `practice-${Date.now()}` : DATE;
+  // ?drill=<id> plays just that drill (dev/tuning); it never counts toward the daily
+  const list = DRILL ? CHALLENGES.filter((m) => m.meta.id === DRILL) : CHALLENGES;
+  const seed = state.practice || (DRILL && !params.get('seed')) ? `practice-${Date.now()}` : DATE;
   const scores = {};
   show('screen-play');
   try {
-    for (let k = 0; k < CHALLENGES.length; k++) {
-      const mod = CHALLENGES[k];
+    for (let k = 0; k < list.length; k++) {
+      const mod = list[k];
       $('#hud-title').textContent = `${mod.meta.icon} ${mod.meta.title.toUpperCase()}`;
       hud.status('');
       hud.pips([], 0);
       hud.clock(1);
       $('#stage').innerHTML = '';
-      await intro(mod.meta, k);
+      await intro(mod.meta, k, list.length);
       await countdown();
       const res = await mod.run({ host: $('#stage'), rng: makeRng(`${seed}:${mod.meta.id}`), build: { ...state.build }, hud });
       scores[mod.meta.id] = res.score;
@@ -194,6 +197,12 @@ async function runChallenges() {
   } finally {
     hideOverlay();
     state.running = false;
+  }
+  if (DRILL) {
+    toast(`${DRILL.toUpperCase()} ${scores[DRILL]}`);
+    renderHome();
+    show('screen-home');
+    return;
   }
   finishRun(scores);
 }
@@ -344,7 +353,7 @@ async function init() {
 
   $('#btn-start').onclick = () => {
     const done = getResult(DATE);
-    if (done) {
+    if (done && !DRILL) {
       state.practice = false;
       state.build = { ...done.build };
       renderResult(done);

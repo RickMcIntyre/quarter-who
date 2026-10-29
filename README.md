@@ -16,6 +16,7 @@ python -m http.server 8770
 Then open http://localhost:8770.
 
 - `?seed=2026-11-03` plays a specific day's seed (useful for testing and tuning).
+- `?drill=arm|legs|iq` plays just one drill (never counts toward the daily). Combine with `?seed=` to replay a specific day's version.
 - A practice run (offered after the daily run) uses a random seed and doesn't count toward the streak.
 
 ## Deploy to GitHub Pages
@@ -33,7 +34,7 @@ js/engine.js        shared canvas stage (virtual 360x600, letterboxed), input he
 js/rng.js           seeded RNG (xmur3 + mulberry32), date keys, Daily # numbering (EPOCH)
 js/arm.js           Drill 1: tight-window and deep-ball throws
 js/legs.js          Drill 2: scramble (juke / spin / break tackles)
-js/iq.js            Drill 3: open man / blitz / coverage-shell reads
+js/iq.js            Drill 3: 7 read types (open man, blitz, hot route, leverage, man/zone, box count, shell), 5 per day
 js/comp.js          weighted nearest-neighbor matching, season projection, draft stock
 js/silhouette.js    QB silhouette paths (shared by the SVG and the share card)
 js/share.js         share text, 1080x1350 image card, Web Share / clipboard / download
@@ -66,7 +67,7 @@ Every difficulty knob is a constant or a seeded range near the top of each modul
 | Arm, deep ball | `DEEP_CATCH_R` (landing tolerance), `DEEP_BALL_SPEED` (hang time), `DEEP_ROUTES`, receiver `speed`, corner `lag`, `safetySpeed` | `arm.js` constants, `makeDeep` |
 | Legs | `DURATION`, spawn speed/interval/types, chaser reaction, hitbox, score formula | `legs.js` `run` |
 | Legs, build effects | juke speed, spin cooldown, stride, break-tackle odds | `legs.js` `buildTraits` |
-| IQ | shot clock `LIMIT`, open-man separation, scoring | `iq.js` `run`, `makeOpen` |
+| IQ | shot clock `LIMIT`, scoring, open-man separation, decoy count, box/blocker spread; add a read type by writing a `makeX(rng)` and adding it to `MAKERS` | `iq.js` |
 
 Build effects (shown on the build screen):
 
