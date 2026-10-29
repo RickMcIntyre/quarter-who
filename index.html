@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1422">
+  <meta name="description" content="Build a quarterback, survive three drills, meet your NFL pro comp. A new run every day.">
+  <title>Quarter-Who?</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- HOME -->
+    <section class="screen active" id="screen-home">
+      <div class="home-wrap">
+        <p class="kicker" id="home-day">Daily #1</p>
+        <h1 class="logo">QUARTER<span>-</span>WHO<span class="q">?</span></h1>
+        <p class="tagline">Build a quarterback. Survive three drills.<br>Meet your pro comp.</p>
+        <div class="steps">
+          <div><b>🎯</b>Arm</div><div><b>🏃</b>Legs</div><div><b>🧠</b>IQ</div><div><b>🏈</b>Comp</div>
+        </div>
+        <div class="chips">
+          <span class="chip" id="home-streak">🔥 0-day streak</span>
+          <span class="chip" id="home-best">Best 0</span>
+        </div>
+        <div id="home-done" class="home-done" hidden></div>
+        <div class="cta-stack">
+          <button class="btn primary" id="btn-start">Start today's run</button>
+          <button class="btn ghost" id="btn-practice" hidden>Practice run (doesn't count)</button>
+        </div>
+        <p class="fine">Same drills for everyone today. About two minutes. One thumb.</p>
+      </div>
+    </section>
+
+    <!-- BUILD -->
+    <section class="screen" id="screen-build">
+      <header class="bar"><button class="icon-btn" data-back aria-label="Back">←</button><span>Build your QB</span><span></span></header>
+      <div class="build-wrap">
+        <div class="sil-box" id="sil-box"></div>
+        <div class="readout"><span id="ro-height">6'2"</span><span class="dot">·</span><span id="ro-weight">220 lb</span></div>
+        <label class="slider">
+          <span>Height</span>
+          <input type="range" id="in-height" min="70" max="78" step="1" value="74" aria-label="Height in inches">
+          <small><i>5'10"</i><i>6'6"</i></small>
+        </label>
+        <label class="slider">
+          <span>Weight</span>
+          <input type="range" id="in-weight" min="195" max="250" step="5" value="220" aria-label="Weight in pounds">
+          <small><i>195</i><i>250</i></small>
+        </label>
+        <div class="effects" id="effects"></div>
+        <button class="btn primary" id="btn-lock">Lock it in →</button>
+      </div>
+    </section>
+
+    <!-- PLAY -->
+    <section class="screen" id="screen-play">
+      <div class="hud">
+        <div class="hud-top">
+          <span class="hud-title" id="hud-title">ARM</span>
+          <span class="hud-status" id="hud-status"></span>
+          <span class="hud-pips" id="hud-pips"></span>
+        </div>
+        <div class="hud-clock"><i id="hud-clock"></i></div>
+      </div>
+      <div class="stage" id="stage"></div>
+      <div class="overlay" id="overlay" hidden></div>
+    </section>
+
+    <!-- RESULT -->
+    <section class="screen" id="screen-result">
+      <div class="result-wrap" id="result"></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
